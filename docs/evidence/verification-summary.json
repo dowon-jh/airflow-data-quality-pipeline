@@ -1,0 +1,391 @@
+{
+  "project": "airflow-data-quality-pipeline",
+  "recorded_on": "2026-09-28",
+  "note": "Selected fields from local execution evidence; runtime paths, secrets and secret hashes omitted.",
+  "default_batch": {
+    "batch_id": "batch-a2ebfbe5e814",
+    "input_rows": 1000,
+    "clean_rows": 959,
+    "quarantine_rows": 41,
+    "warning_rows": 3,
+    "issue_count": 44,
+    "mart_groups": 5,
+    "quarantine_percent": 4.1,
+    "gate": "PASS"
+  },
+  "phase8": {
+    "suite_id": "20260928T075054",
+    "status": "PASS",
+    "started_at": "2026-09-28T07:50:54.623520+00:00",
+    "completed_at": "2026-09-28T07:56:44.679099+00:00",
+    "events": 32,
+    "final_check": {
+      "status": "PASS",
+      "original_batches_unchanged_after_setup": true,
+      "dag_runs": 13,
+      "successful_runs": 7,
+      "expected_failed_runs": 6,
+      "services_running": true,
+      "raw_total": 3300
+    },
+    "setup_recovery": {
+      "status": "PASS",
+      "secrets_unchanged": true,
+      "services_running": true,
+      "scenarios": [
+        {
+          "scenario": "setup_precommit_failure",
+          "env_unchanged": true,
+          "previous_service_state_restored": true,
+          "temporary_config_removed": true
+        },
+        {
+          "scenario": "setup_postcommit_failure",
+          "retained_config": true,
+          "forward_recovery_succeeded": true,
+          "env_unchanged": true
+        }
+      ]
+    },
+    "task_events": [
+      {
+        "scenario": "normal_initial_load",
+        "run_id": "phase8__20260928T075054__normal",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "same_run_task_clear",
+        "run_id": "phase8__20260928T075054__normal",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "single_row_quarantine",
+        "run_id": "phase8__20260928T075054__row-error",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "boundary5",
+        "run_id": "phase8__20260928T075054__boundary5",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "boundary6",
+        "run_id": "phase8__20260928T075054__boundary6",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "failed"
+        },
+        "expected_failure": "check_batch_thresholds"
+      },
+      {
+        "scenario": "bad-model",
+        "run_id": "phase8__20260928T075054__bad-model",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "failed"
+        },
+        "expected_failure": "check_batch_thresholds"
+      },
+      {
+        "scenario": "failed_gate_clear",
+        "run_id": "phase8__20260928T075054__bad-model",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "failed"
+        },
+        "expected_failure": "check_batch_thresholds"
+      },
+      {
+        "scenario": "corrected_new_batch",
+        "run_id": "phase8__20260928T075054__corrected",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "null_dimensions_and_date_fallback",
+        "run_id": "phase8__20260928T075054__dimensions",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "schema_failure",
+        "run_id": "phase8__20260928T075054__schema-failure",
+        "states": {
+          "collect_input": "failed",
+          "load_raw": "upstream_failed",
+          "evaluate_quality": "upstream_failed",
+          "load_results": "upstream_failed",
+          "build_quality_metrics": "upstream_failed",
+          "check_batch_thresholds": "upstream_failed"
+        },
+        "expected_failure": "collect_input"
+      },
+      {
+        "scenario": "empty_input_failure",
+        "run_id": "phase8__20260928T075054__empty",
+        "states": {
+          "collect_input": "failed",
+          "load_raw": "upstream_failed",
+          "evaluate_quality": "upstream_failed",
+          "load_results": "upstream_failed",
+          "build_quality_metrics": "upstream_failed",
+          "check_batch_thresholds": "upstream_failed"
+        },
+        "expected_failure": "collect_input"
+      },
+      {
+        "scenario": "same_batch_content_conflict",
+        "run_id": "phase8__20260928T075054__conflict",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "failed",
+          "evaluate_quality": "upstream_failed",
+          "load_results": "upstream_failed",
+          "build_quality_metrics": "upstream_failed",
+          "check_batch_thresholds": "upstream_failed"
+        },
+        "expected_failure": "load_raw"
+      },
+      {
+        "scenario": "new_run_reprocessing",
+        "run_id": "phase8__20260928T075054__new-run-reprocess",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "superseded_run_rejected",
+        "run_id": "phase8__20260928T075054__normal",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "failed",
+          "build_quality_metrics": "upstream_failed",
+          "check_batch_thresholds": "upstream_failed"
+        },
+        "expected_failure": "load_results"
+      },
+      {
+        "scenario": "db_transient_recovered",
+        "run_id": "phase8__20260928T075054__db-transient",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      },
+      {
+        "scenario": "db_retries_exhausted",
+        "run_id": "phase8__20260928T075054__db-exhausted",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "failed",
+          "evaluate_quality": "upstream_failed",
+          "load_results": "upstream_failed",
+          "build_quality_metrics": "upstream_failed",
+          "check_batch_thresholds": "upstream_failed"
+        },
+        "expected_failure": "load_raw"
+      },
+      {
+        "scenario": "db_failed_run_clear_recovered",
+        "run_id": "phase8__20260928T075054__db-exhausted",
+        "states": {
+          "collect_input": "success",
+          "load_raw": "success",
+          "evaluate_quality": "success",
+          "load_results": "success",
+          "build_quality_metrics": "success",
+          "check_batch_thresholds": "success"
+        },
+        "expected_failure": null
+      }
+    ]
+  },
+  "clean_install": {
+    "suite_id": "20260928T091708-656fae",
+    "status": "PASS",
+    "started_at": "2026-09-28T09:17:10.670315+00:00",
+    "completed_at": "2026-09-28T09:17:57.175349+00:00",
+    "fresh_preflight": {
+      "both_volumes_absent": true,
+      "secrets_absent": true,
+      "env_absent": true,
+      "input_absent": true
+    },
+    "empty_database_after_setup": {
+      "raw.ingest_batch": 0,
+      "raw.ai_product_output": 0,
+      "clean.processing_run": 0,
+      "clean.ai_product_output": 0,
+      "quarantine.ai_product_output": 0,
+      "quarantine.dq_issue": 0,
+      "mart.daily_quality_metrics": 0,
+      "mart.daily_rule_metrics": 0,
+      "mart.batch_quality_gate": 0
+    },
+    "import_errors": [],
+    "dag_runs": [
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "run_id": "manual__2026-09-28T09:17:36.017849+00:00",
+        "state": "success",
+        "run_after": "2026-09-28T09:17:36.017849+00:00",
+        "logical_date": "",
+        "start_date": "2026-09-28T09:17:37.590639+00:00",
+        "end_date": "2026-09-28T09:17:45.790571+00:00"
+      }
+    ],
+    "task_states": [
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "collect_input",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:37.704655+00:00",
+        "end_date": "2026-09-28T09:17:39.929943+00:00"
+      },
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "load_raw",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:40.773190+00:00",
+        "end_date": "2026-09-28T09:17:41.000596+00:00"
+      },
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "evaluate_quality",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:41.640529+00:00",
+        "end_date": "2026-09-28T09:17:41.800450+00:00"
+      },
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "load_results",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:42.710060+00:00",
+        "end_date": "2026-09-28T09:17:42.944953+00:00"
+      },
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "build_quality_metrics",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:43.755542+00:00",
+        "end_date": "2026-09-28T09:17:43.945056+00:00"
+      },
+      {
+        "dag_id": "ai_output_quality_pipeline",
+        "logical_date": "",
+        "task_id": "check_batch_thresholds",
+        "state": "success",
+        "start_date": "2026-09-28T09:17:44.809551+00:00",
+        "end_date": "2026-09-28T09:17:44.994783+00:00"
+      }
+    ],
+    "results": {
+      "input_rows": 1000,
+      "clean_rows": 959,
+      "quarantine_rows": 41,
+      "warning_rows": 3,
+      "issue_count": 44,
+      "ruleset_version": "1.1"
+    },
+    "table_counts": {
+      "raw.ingest_batch": 1,
+      "raw.ai_product_output": 1000,
+      "clean.processing_run": 1,
+      "clean.ai_product_output": 959,
+      "quarantine.ai_product_output": 41,
+      "quarantine.dq_issue": 44,
+      "mart.daily_quality_metrics": 5,
+      "mart.daily_rule_metrics": 20,
+      "mart.batch_quality_gate": 1
+    },
+    "gate": {
+      "decision": "PASS",
+      "policy_version": "1.0",
+      "quarantine_percent": 4.1
+    },
+    "runtime_admin_flags_false": true,
+    "original_environment_unchanged": true,
+    "verification_services_stopped": true
+  },
+  "limits": [
+    "Same PC with existing Docker Desktop, WSL, Python and cached images",
+    "No fresh OS or independent PC installation verified",
+    "No production SLA or actual LLM calls"
+  ]
+}

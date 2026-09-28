@@ -1,0 +1,55 @@
+name: ${PROJECT_COMPOSE_NAME:-ai-output-dq-pipeline}
+
+services:
+  project-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${PROJECT_DB_USER}
+      POSTGRES_PASSWORD_FILE: /run/secrets/project_admin_password
+      POSTGRES_DB: ${PROJECT_DB_NAME}
+    secrets:
+      - project_admin_password
+      - project_app_password
+    volumes:
+      - project_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  airflow:
+    image: apache/airflow:3.3.2
+    command: standalone
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      PYTHONPATH: /opt/airflow/project/src
+      PROJECT_DB_HOST: project-postgres
+      PROJECT_DB_NAME: ${PROJECT_DB_NAME}
+      PROJECT_DB_USER: etl_app
+      PROJECT_DB_PASSWORD_FILE: /run/secrets/project_app_password
+    secrets:
+      - project_app_password
+    ports:
+      - "127.0.0.1:${PROJECT_AIRFLOW_PORT:-8080}:8080"
+    volumes:
+      - airflow_home:/opt/airflow
+      - ./airflow/dags:/opt/airflow/dags:ro
+      - ./src:/opt/airflow/project/src:ro
+      - ./sql:/opt/airflow/project/sql:ro
+      - ./data:/opt/airflow/project/data:ro
+    depends_on:
+      project-postgres:
+        condition: service_healthy
+
+volumes:
+  project_pgdata:
+  airflow_home:
+
+secrets:
+  project_admin_password:
+    file: ${PROJECT_SECRET_DIR}/admin_password
+  project_app_password:
+    file: ${PROJECT_SECRET_DIR}/app_password

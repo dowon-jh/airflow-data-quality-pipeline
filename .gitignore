@@ -1,0 +1,9 @@
+.env
+.env.setup.*
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+airflow/logs/
+data/generated/
+pingu-v2-run/

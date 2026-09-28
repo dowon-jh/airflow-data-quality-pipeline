@@ -1,0 +1,25 @@
+{
+  "batch_id": "batch-52953b4bdfe5",
+  "data_sha256": "aeae14944525a463871ba053751a9165e83fe383e798806c72a74c8e5a5f3bf5",
+  "error_rate_requested": "0.50",
+  "generator_version": "1.1",
+  "injected_error_count": 15,
+  "injected_error_counts": {
+    "DUPLICATE_PRODUCT_ID": 2,
+    "EMPTY_ATTRIBUTE": 1,
+    "EXCESSIVE_LENGTH": 1,
+    "HALLUCINATION_CANDIDATE": 1,
+    "INVALID_CATEGORY": 1,
+    "INVALID_PRODUCT_ID": 2,
+    "NULL_ATTRIBUTE": 3,
+    "NULL_PRODUCT_ID": 2,
+    "OCR_MISMATCH": 1,
+    "SPECIAL_CHARACTER_ONLY": 1
+  },
+  "model_version": "v1.0",
+  "normal_count": 15,
+  "null_rate_requested": "0.10",
+  "rows": 30,
+  "seed": 42,
+  "start_date_utc": "2026-09-01"
+}

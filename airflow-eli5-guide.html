@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Airflow 기본 개념 — 신입 온보딩 가이드</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6a7d;
+      --paper: #f7f9fc;
+      --card: #ffffff;
+      --line: #dbe4ef;
+      --blue: #377dff;
+      --blue-soft: #eaf2ff;
+      --teal: #0d9488;
+      --teal-soft: #e7f8f5;
+      --orange: #d97706;
+      --orange-soft: #fff4df;
+      --red: #dc2626;
+      --red-soft: #fff0f0;
+      --purple: #7c3aed;
+      --purple-soft: #f2ebff;
+      --shadow: 0 16px 45px rgba(32, 55, 90, .10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Pretendard", "Noto Sans KR", "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+
+    .hero {
+      padding: 64px 0 52px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(55,125,255,.18), transparent 32%),
+        radial-gradient(circle at 90% 20%, rgba(13,148,136,.16), transparent 28%),
+        linear-gradient(135deg, #f5f8ff 0%, #edf7f6 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(55,125,255,.2);
+      color: #2456b9;
+      font-weight: 800;
+      font-size: .82rem;
+      letter-spacing: .04em;
+    }
+    h1, h2, h3 { line-height: 1.2; letter-spacing: -.03em; }
+    h1 { max-width: 760px; margin: 18px 0 16px; font-size: clamp(2.3rem, 6vw, 4.8rem); }
+    h2 { margin: 0 0 14px; font-size: clamp(1.65rem, 3vw, 2.35rem); }
+    h3 { margin: 0 0 8px; font-size: 1.18rem; }
+    .lead { max-width: 760px; color: var(--muted); font-size: 1.16rem; }
+    .hero-cards, .grid, .rules, .mistakes { display: grid; gap: 16px; }
+    .hero-cards { grid-template-columns: repeat(3, 1fr); margin-top: 30px; }
+    .mini-card, .card, .rule, .mistake, .quote, details {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .mini-card { padding: 20px; }
+    .mini-card .emoji { font-size: 2rem; }
+    .mini-card strong { display: block; margin-top: 10px; font-size: 1.08rem; }
+    .mini-card p { margin: 6px 0 0; color: var(--muted); font-size: .95rem; }
+
+    main { padding: 46px 0 80px; }
+    section { margin: 0 0 58px; scroll-margin-top: 24px; }
+    .section-kicker { color: var(--blue); font-weight: 800; font-size: .9rem; margin-bottom: 8px; }
+    .section-intro { margin: 0 0 20px; color: var(--muted); max-width: 760px; }
+
+    .big-idea {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .idea-card { padding: 26px; border-radius: var(--radius); }
+    .idea-card.blue { background: var(--blue-soft); border: 1px solid #c9dcff; }
+    .idea-card.teal { background: var(--teal-soft); border: 1px solid #bcebe5; }
+    .idea-card p { margin: 0; }
+    .analogy { display: flex; gap: 16px; align-items: flex-start; }
+    .analogy-icon { font-size: 3rem; line-height: 1; }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      align-items: center;
+      margin: 24px 0 18px;
+    }
+    .pipeline-step {
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      text-align: center;
+      background: #fff;
+      border: 2px solid #b9c9dc;
+      border-radius: 18px;
+      font-weight: 800;
+    }
+    .pipeline-step small { display: block; margin-top: 5px; color: var(--muted); font-weight: 500; }
+    .arrow { color: var(--blue); font-size: 1.8rem; text-align: center; }
+    .pipeline-note { padding: 15px 18px; border-left: 5px solid var(--orange); background: var(--orange-soft); border-radius: 12px; }
+
+    .grid { grid-template-columns: repeat(3, 1fr); }
+    .card { padding: 22px; }
+    .card .tag, .rule .tag, .mistake .tag {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    .tag.blue { color: #2456b9; background: var(--blue-soft); }
+    .tag.teal { color: #08766e; background: var(--teal-soft); }
+    .tag.orange { color: #9a5a00; background: var(--orange-soft); }
+    .tag.purple { color: #6530c6; background: var(--purple-soft); }
+    .card p, .rule p, .mistake p { margin: 0; color: var(--muted); }
+    .card .remember { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); color: var(--ink); font-weight: 800; }
+
+    .control-flow {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin: 22px 0;
+    }
+    .control-box { padding: 24px; text-align: center; border: 1px solid var(--line); background: #fff; }
+    .control-box:first-child { border-radius: 20px 0 0 20px; }
+    .control-box:last-child { border-radius: 0 20px 20px 0; }
+    .control-box + .control-box { border-left: 0; }
+    .control-box .big { display: block; font-size: 2.4rem; margin-bottom: 4px; }
+    .control-box strong { display: block; }
+    .control-box span { display: block; margin-top: 4px; color: var(--muted); font-size: .9rem; }
+
+    .code {
+      overflow: auto;
+      padding: 22px;
+      border-radius: 18px;
+      background: #111827;
+      color: #e5eefc;
+      font: .88rem/1.7 Consolas, "Cascadia Code", monospace;
+      box-shadow: var(--shadow);
+    }
+    .code .comment { color: #91a4bf; }
+    .code .key { color: #89ddff; }
+    .code .name { color: #c3e88d; }
+    .code .string { color: #f6c177; }
+
+    .rules { grid-template-columns: repeat(2, 1fr); counter-reset: rule; }
+    .rule { display: grid; grid-template-columns: 46px 1fr; gap: 14px; padding: 20px; }
+    .rule::before { counter-increment: rule; content: counter(rule); display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: var(--blue-soft); color: var(--blue); font-weight: 900; }
+    .rule h3 { margin-bottom: 5px; }
+
+    .threshold {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+      padding: 24px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #fff, #fff8ed);
+      border: 1px solid #f4d8a6;
+    }
+    .threshold .state { padding: 16px; border-radius: 16px; text-align: center; }
+    .threshold .ok { background: var(--teal-soft); color: #08766e; }
+    .threshold .fail { background: var(--red-soft); color: var(--red); }
+    .threshold .arrow-big { font-size: 2rem; color: var(--orange); }
+
+    .mistakes { grid-template-columns: repeat(2, 1fr); }
+    .mistake { padding: 20px; border-left: 5px solid var(--red); }
+    .mistake .tag { color: var(--red); background: var(--red-soft); }
+
+    details { margin: 12px 0; padding: 17px 20px; box-shadow: none; }
+    details[open] { border-color: #b9cfff; }
+    summary { cursor: pointer; font-weight: 850; }
+    details p { margin: 12px 0 0; color: var(--muted); }
+    details ul { margin-bottom: 0; }
+
+    .checklist { display: grid; gap: 10px; }
+    .check-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; background: #fff; border: 1px solid var(--line); border-radius: 14px; }
+    .check-item input { width: 20px; height: 20px; accent-color: var(--blue); margin-top: 3px; }
+    .check-item:has(input:checked) { background: var(--teal-soft); border-color: #a3ddd6; }
+    .check-item:has(input:checked) label { text-decoration: line-through; color: #3c827d; }
+    .progress { margin-top: 15px; color: var(--muted); font-size: .92rem; }
+    .progress-bar { height: 9px; margin-top: 8px; overflow: hidden; border-radius: 999px; background: #e6edf5; }
+    .progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); transition: width .2s ease; }
+
+    .footer { padding: 34px 0 50px; color: var(--muted); text-align: center; border-top: 1px solid var(--line); }
+    .small { color: var(--muted); font-size: .9rem; }
+    @media (max-width: 820px) {
+      .hero-cards, .grid, .rules, .mistakes { grid-template-columns: 1fr 1fr; }
+      .big-idea { grid-template-columns: 1fr; }
+      .pipeline { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      .control-flow { grid-template-columns: 1fr; gap: 10px; }
+      .control-box:first-child, .control-box:last-child { border-radius: 20px; }
+      .control-box + .control-box { border-left: 1px solid var(--line); }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: min(100% - 24px, 1120px); }
+      .hero { padding-top: 38px; }
+      .hero-cards, .grid, .rules, .mistakes { grid-template-columns: 1fr; }
+      .threshold { grid-template-columns: 1fr; }
+      .threshold .arrow-big { transform: rotate(90deg); text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">ELI5 · 신입 온보딩</div>
+      <h1>Airflow는 일을 대신하는 로봇이 아니라, 일을 잘 시키는 관제탑입니다.</h1>
+      <p class="lead">매일 같은 시간에 데이터를 가져오고, 순서대로 처리하고, 실패하면 다시 시키고, 결과를 확인하는 방법을 배웁니다.</p>
+      <div class="hero-cards">
+        <div class="mini-card"><div class="emoji">🗺️</div><strong>DAG = 작업 지도</strong><p>무슨 일을 어떤 순서로 할지 그린 설계도</p></div>
+        <div class="mini-card"><div class="emoji">🧩</div><strong>Task = 한 가지 일</strong><p>가져오기, 검사하기, 저장하기처럼 작게 나눈 작업</p></div>
+        <div class="mini-card"><div class="emoji">🧑‍✈️</div><strong>Scheduler = 배차 담당자</strong><p>언제 실행할지 결정하고 일을 배정하는 역할</p></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="first" aria-labelledby="first-title">
+      <div class="section-kicker">01 · 딱 하나의 그림</div>
+      <h2 id="first-title">Airflow를 택배 회사처럼 생각해보세요</h2>
+      <p class="section-intro">Airflow는 데이터를 저장하는 곳이 아닙니다. “이 일을 먼저 하고, 끝나면 다음 일을 하라”는 약속을 지키는 관리자입니다.</p>
+      <div class="big-idea">
+        <div class="idea-card blue">
+          <div class="analogy"><div class="analogy-icon">📦</div><div><h3>데이터 파이프라인 = 택배 흐름</h3><p>상품을 접수하고 → 분류하고 → 배송하고 → 도착 확인을 합니다. 중간 단계가 실패하면 어디서 멈췄는지 알아야 합니다.</p></div></div>
+        </div>
+        <div class="idea-card teal">
+          <div class="analogy"><div class="analogy-icon">🎛️</div><div><h3>Airflow = 관제탑</h3><p>직접 택배를 보관하지 않고, 각 담당자에게 일을 시키고 상태를 기록합니다.</p></div></div>
+        </div>
+      </div>
+      <div class="pipeline" aria-label="데이터 파이프라인 예시">
+        <div class="pipeline-step">1. 추출<small>원천 데이터 가져오기</small></div>
+        <div class="arrow">→</div>
+        <div class="pipeline-step">2. 검증<small>문제 있는지 검사</small></div>
+        <div class="arrow">→</div>
+        <div class="pipeline-step">3. 적재<small>DB에 저장</small></div>
+      </div>
+      <div class="pipeline-note"><strong>기억할 문장:</strong> Airflow가 데이터를 “들고 있는” 것이 아니라, 데이터 일을 “순서대로 실행하고 감시”합니다.</div>
+    </section>
+
+    <section id="terms" aria-labelledby="terms-title">
+      <div class="section-kicker">02 · 기본 단어</div>
+      <h2 id="terms-title">실무에서 매일 듣게 될 9가지</h2>
+      <p class="section-intro">아래 단어를 알면 Airflow 화면과 팀 대화의 절반이 이해됩니다.</p>
+      <div class="grid">
+        <article class="card"><span class="tag blue">설계도</span><h3>DAG</h3><p>Directed Acyclic Graph. 작업과 순서를 적은 지도입니다. 같은 길을 무한히 돌지 않도록 순환이 없어야 합니다.</p><div class="remember">“전체 작업의 지도”</div></article>
+        <article class="card"><span class="tag teal">작은 일</span><h3>Task</h3><p>하나의 독립적인 작업입니다. 예: CSV 읽기, SQL 실행, 품질 검사, 결과 저장.</p><div class="remember">“지도 안의 한 칸”</div></article>
+        <article class="card"><span class="tag orange">실행 방법</span><h3>Operator</h3><p>Task를 어떤 방식으로 실행할지 정한 도구입니다. Python 함수 실행, SQL 실행, Bash 실행 등이 있습니다.</p><div class="remember">“일을 하는 도구의 종류”</div></article>
+        <article class="card"><span class="tag purple">한 번의 실행</span><h3>DAG Run</h3><p>스케줄에 따라 DAG 전체가 한 번 실행된 기록입니다. 오늘 배치 1회가 하나의 DAG Run입니다.</p><div class="remember">“오늘 한 번의 배차”</div></article>
+        <article class="card"><span class="tag blue">결정자</span><h3>Scheduler</h3><p>실행할 시간이 되었는지 보고, 어떤 Task를 실행할지 결정합니다.</p><div class="remember">“언제 출발시킬지 정함”</div></article>
+        <article class="card"><span class="tag teal">실행자</span><h3>Worker</h3><p>Scheduler의 지시를 받아 실제 Python, SQL, Bash 등을 실행합니다.</p><div class="remember">“실제로 손발을 움직임”</div></article>
+        <article class="card"><span class="tag orange">작은 메모</span><h3>XCom</h3><p>Task끼리 작은 값 하나를 전달하는 메모입니다. 대용량 데이터는 DB나 파일 저장소에 두고 XCom에는 경로만 전달합니다.</p><div class="remember">“쪽지이지 창고가 아님”</div></article>
+        <article class="card"><span class="tag purple">접속 정보</span><h3>Connection / Variable</h3><p>DB 접속 정보나 환경별 설정을 코드 밖에서 관리합니다. 비밀번호를 DAG 코드에 하드코딩하지 않습니다.</p><div class="remember">“비밀과 설정은 금고에”</div></article>
+        <article class="card"><span class="tag blue">기록</span><h3>Log / Metadata DB</h3><p>로그는 실행 과정의 일기이고, Metadata DB는 Task 상태와 DAG Run 상태를 기록하는 장부입니다.</p><div class="remember">“문제가 생기면 기록부터 확인”</div></article>
+      </div>
+    </section>
+
+    <section id="execution" aria-labelledby="execution-title">
+      <div class="section-kicker">03 · 실제로 무슨 일이 일어나는가</div>
+      <h2 id="execution-title">실행 흐름은 이렇게 움직입니다</h2>
+      <p class="section-intro">사람이 버튼을 누르거나 스케줄 시간이 되면, Airflow는 아래 순서로 움직입니다.</p>
+      <div class="control-flow">
+        <div class="control-box"><span class="big">🧑‍💻</span><strong>1. 요청 또는 스케줄</strong><span>“오늘 데이터 처리해!”</span></div>
+        <div class="control-box"><span class="big">🧭</span><strong>2. Scheduler 판단</strong><span>의존성이 끝났는지 확인</span></div>
+        <div class="control-box"><span class="big">⚙️</span><strong>3. Worker 실행</strong><span>Task를 실제로 수행</span></div>
+      </div>
+      <div class="big-idea">
+        <div class="idea-card blue"><h3>의존성(Dependency)</h3><p><strong>추출이 끝나야 검증을 시작</strong>하는 식으로 작업 사이의 순서를 정합니다. Airflow에서는 보통 “upstream이 끝난 뒤 downstream이 실행된다”고 말합니다.</p></div>
+        <div class="idea-card teal"><h3>상태(Status)</h3><p>Task는 보통 <strong>queued → running → success</strong>로 갑니다. 실패하면 <strong>failed</strong>가 되고, 재시도 설정이 있으면 <strong>up_for_retry</strong>가 됩니다.</p></div>
+      </div>
+    </section>
+
+    <section id="example" aria-labelledby="example-title">
+      <div class="section-kicker">04 · 코드 모양 익히기</div>
+      <h2 id="example-title">아래 코드는 “작업 지도를 그리는 법”입니다</h2>
+      <p class="section-intro">이 코드는 개념을 보여주는 작은 예시입니다. 핵심은 함수 내용보다 Task 사이의 순서입니다.</p>
+      <div class="code" role="region" aria-label="Airflow DAG 개념 예시"><span class="comment"># 개념용 Airflow DAG 예시</span>
+<span class="key">from</span> airflow <span class="key">import</span> DAG
+<span class="key">from</span> airflow.operators.python <span class="key">import</span> PythonOperator
+<span class="key">from</span> datetime <span class="key">import</span> datetime
+
+<span class="key">def</span> <span class="name">extract</span>():
+    <span class="comment"># 원천 데이터 가져오기</span>
+    <span class="key">pass</span>
+
+<span class="key">def</span> <span class="name">validate</span>():
+    <span class="comment"># NULL, 중복, 형식 검사</span>
+    <span class="key">pass</span>
+
+<span class="key">with</span> DAG(<span class="string">"ai_output_quality_pipeline"</span>, start_date=datetime(2026, 1, 1), schedule=<span class="string">"@daily"</span>, catchup=<span class="key">False</span>) <span class="key">as</span> dag:
+    extract_task = PythonOperator(task_id=<span class="string">"extract_raw_data"</span>, python_callable=extract)
+    validate_task = PythonOperator(task_id=<span class="string">"validate_schema"</span>, python_callable=validate)
+
+    extract_task &gt;&gt; validate_task
+    <span class="comment"># “extract가 끝난 뒤 validate를 실행하라”</span></div>
+      <details>
+        <summary>코드에서 특히 봐야 할 부분</summary>
+        <ul>
+          <li><code>dag</code>: 전체 작업 지도의 이름입니다.</li>
+          <li><code>task_id</code>: Airflow UI에서 보이는 작업의 고유 이름입니다.</li>
+          <li><code>python_callable</code>: Task가 실행할 Python 함수입니다.</li>
+          <li><code>&gt;&gt;</code>: 왼쪽 작업이 끝난 뒤 오른쪽 작업을 실행한다는 뜻입니다.</li>
+          <li>실무에서는 함수 안에 대량 처리를 넣기 전에 재실행해도 안전한지 먼저 생각합니다.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section id="must-know" aria-labelledby="must-know-title">
+      <div class="section-kicker">05 · 신입 필수 지식</div>
+      <h2 id="must-know-title">실무에서 반드시 챙길 8가지</h2>
+      <div class="rules">
+        <article class="rule"><div><h3>스케줄 시간 ≠ 처리 데이터 시간</h3><p>새벽 1시에 실행되어도 어제 하루 데이터를 처리할 수 있습니다. 실행 시각과 대상 데이터 구간을 구분하세요.</p></div></article>
+        <article class="rule"><div><h3>재시도는 공짜가 아니다</h3><p>Task가 다시 실행되어도 중복 적재가 생기지 않도록 Idempotency를 설계해야 합니다.</p></div></article>
+        <article class="rule"><div><h3>Task는 작고 명확하게</h3><p>추출, 변환, 적재를 한 Task에 모두 넣기보다 실패 지점을 찾기 쉽게 적절히 나눕니다.</p></div></article>
+        <article class="rule"><div><h3>XCom에 큰 데이터를 넣지 않기</h3><p>큰 DataFrame이나 파일 본문은 DB·오브젝트 스토리지에 두고 경로·ID만 전달합니다.</p></div></article>
+        <article class="rule"><div><h3>비밀정보를 코드에 쓰지 않기</h3><p>비밀번호와 토큰은 Connection, Secret Backend, 환경 설정으로 관리합니다.</p></div></article>
+        <article class="rule"><div><h3>로그가 곧 첫 번째 증거</h3><p>실패하면 추측하지 말고 Task 로그, 입력 건수, SQL 결과, upstream 상태를 순서대로 확인합니다.</p></div></article>
+        <article class="rule"><div><h3>데이터 품질 오류와 시스템 장애 구분</h3><p>일부 레코드 오류는 격리하고, DB 연결 실패나 스키마 변경은 파이프라인을 중단할 수 있습니다.</p></div></article>
+        <article class="rule"><div><h3>스케줄보다 재현성이 먼저</h3><p>수동 실행, 재실행, 백필을 해도 같은 입력에 예측 가능한 결과가 나와야 합니다.</p></div></article>
+      </div>
+    </section>
+
+    <section id="quality" aria-labelledby="quality-title">
+      <div class="section-kicker">06 · 이 프로젝트에 적용하기</div>
+      <h2 id="quality-title">AI 데이터 품질 파이프라인에서는 이렇게 생각합니다</h2>
+      <p class="section-intro">소수의 나쁜 레코드와 전체 파이프라인의 위험을 같은 방식으로 처리하지 않습니다.</p>
+      <div class="threshold">
+        <div class="state ok"><strong>Record-level Error</strong><br>문제 레코드만 Quarantine</div>
+        <div class="arrow-big">→</div>
+        <div class="state fail"><strong>Pipeline-level Error</strong><br>임계치 초과 시 Task Fail</div>
+      </div>
+      <div class="grid" style="margin-top:16px">
+        <article class="card"><span class="tag teal">계속 처리</span><h3>NULL 한 건</h3><p>해당 레코드는 Quarantine으로 보내고, 정상 레코드는 Clean Layer로 계속 보냅니다.</p></article>
+        <article class="card"><span class="tag orange">중단 검토</span><h3>NULL 비율 30%</h3><p>데이터 전체가 믿기 어려울 수 있으므로 품질 검사를 실패시키고 후속 적재를 막습니다.</p></article>
+        <article class="card"><span class="tag purple">관찰</span><h3>Hallucination Candidate</h3><p>원문에서 근거를 찾기 어려운 값은 확정 오류가 아닌 추가 검수 후보로 기록합니다.</p></article>
+      </div>
+    </section>
+
+    <section id="mistakes" aria-labelledby="mistakes-title">
+      <div class="section-kicker">07 · 초보자가 자주 하는 실수</div>
+      <h2 id="mistakes-title">이것만 피해도 절반은 성공입니다</h2>
+      <div class="mistakes">
+        <article class="mistake"><span class="tag">실수 1</span><h3>DAG 파일 안에서 바로 데이터 처리</h3><p>DAG 파일은 지도만 그려야 합니다. 무거운 API 호출이나 DB 처리는 Task가 실행될 때 하세요.</p></article>
+        <article class="mistake"><span class="tag">실수 2</span><h3>Task 하나에 모든 일을 넣기</h3><p>실패 위치가 보이지 않습니다. 추출·검증·적재처럼 관찰 가능한 단위로 나누세요.</p></article>
+        <article class="mistake"><span class="tag">실수 3</span><h3>재실행하면 중복되는 적재</h3><p>실패한 Task를 다시 실행할 수 있도록 키, 파티션, UPSERT, 트랜잭션을 설계하세요.</p></article>
+        <article class="mistake"><span class="tag">실수 4</span><h3>로그 없이 “Airflow가 이상해요”라고 말하기</h3><p>어느 DAG Run의 어느 Task가 어떤 입력으로 실패했는지부터 확인하고 공유하세요.</p></article>
+      </div>
+    </section>
+
+    <section id="checklist" aria-labelledby="checklist-title">
+      <div class="section-kicker">08 · 실무 투입 전 체크</div>
+      <h2 id="checklist-title">이 질문에 답할 수 있으면 출발해도 됩니다</h2>
+      <p class="section-intro">체크박스를 눌러 스스로 확인해보세요. 브라우저를 닫으면 체크 상태는 초기화됩니다.</p>
+      <div class="checklist">
+        <div class="check-item"><input id="c1" type="checkbox"><label for="c1">DAG, Task, DAG Run의 차이를 내 말로 설명할 수 있다.</label></div>
+        <div class="check-item"><input id="c2" type="checkbox"><label for="c2">Scheduler와 Worker가 각각 무엇을 하는지 설명할 수 있다.</label></div>
+        <div class="check-item"><input id="c3" type="checkbox"><label for="c3"><code>&gt;&gt;</code>가 작업 순서를 의미한다는 것을 안다.</label></div>
+        <div class="check-item"><input id="c4" type="checkbox"><label for="c4">Task 재실행 시 중복 적재를 막을 방법을 생각할 수 있다.</label></div>
+        <div class="check-item"><input id="c5" type="checkbox"><label for="c5">XCom에 큰 데이터를 넣으면 안 되는 이유를 안다.</label></div>
+        <div class="check-item"><input id="c6" type="checkbox"><label for="c6">실패한 Task의 로그와 upstream 상태를 확인할 수 있다.</label></div>
+        <div class="check-item"><input id="c7" type="checkbox"><label for="c7">Record-level Error와 Pipeline-level Error를 구분할 수 있다.</label></div>
+        <div class="check-item"><input id="c8" type="checkbox"><label for="c8">실행 날짜와 처리 대상 데이터 날짜가 다를 수 있음을 안다.</label></div>
+      </div>
+      <div class="progress"><span id="progress-text">0 / 8 완료</span><div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div></div>
+    </section>
+
+    <section id="next" aria-labelledby="next-title">
+      <div class="section-kicker">09 · 다음 학습 순서</div>
+      <h2 id="next-title">이 순서로 연습하세요</h2>
+      <details open><summary>1단계 · Hello Airflow</summary><p>Python 함수 두 개를 Task로 만들고 <code>task_a &gt;&gt; task_b</code> 순서로 실행해보세요.</p></details>
+      <details><summary>2단계 · 실패와 재시도</summary><p>일부러 예외를 발생시키고 로그, failed 상태, retry 동작을 확인하세요.</p></details>
+      <details><summary>3단계 · PostgreSQL 연결</summary><p>작은 샘플 데이터를 Raw Layer에 넣고 SQL Task로 조회해보세요.</p></details>
+      <details><summary>4단계 · 품질 규칙 연결</summary><p>NULL 검사 하나부터 시작해 PASS와 Quarantine 결과를 분리하세요.</p></details>
+      <details><summary>5단계 · 재실행과 장애 실험</summary><p>같은 DAG Run을 다시 실행해도 중복이 생기지 않는지 확인하고, 임계치 초과 시 Pipeline이 멈추는지 실험하세요.</p></details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><strong>한 줄 요약:</strong> Airflow는 데이터 그 자체가 아니라, 데이터 일을 순서대로 실행하고 감시하는 관제탑입니다.</p>
+      <p class="small">AI Output Data Quality Pipeline 프로젝트의 신입 온보딩용 ELI5 가이드</p>
+    </div>
+  </footer>
+
+  <script>
+    const checks = [...document.querySelectorAll('.check-item input')];
+    const text = document.getElementById('progress-text');
+    const fill = document.getElementById('progress-fill');
+    function updateProgress() {
+      const done = checks.filter((input) => input.checked).length;
+      text.textContent = `${done} / ${checks.length} 완료`;
+      fill.style.width = `${(done / checks.length) * 100}%`;
+    }
+    checks.forEach((input) => input.addEventListener('change', updateProgress));
+  </script>
+</body>
+</html>
